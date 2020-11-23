@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.platform.video.bulk" version="1.0.0">
+
+  <require>org.nuxeo.ecm.core.bulk</require>
+
+  <extension target="org.nuxeo.ecm.core.bulk" point="actions">
+    <action name="recomputeRenditions" inputStream="bulk/recomputeRenditions" bucketSize="20" batchSize="2" httpEnabled="true"
+      validationClass="org.nuxeo.ecm.platform.video.service.RecomputeRenditionActionValidation" />
+  </extension>
+
+  <extension target="org.nuxeo.runtime.stream.service" point="streamProcessor">
+    <streamProcessor name="recomputeRenditions" class="org.nuxeo.ecm.platform.video.service.RecomputeRenditionsAction"
+      defaultConcurrency="2" defaultPartitions="6">
+      <policy name="default" maxRetries="3" delay="1s" maxDelay="10s" continueOnFailure="true" />
+    </streamProcessor>
+  </extension>
+
+</component>
