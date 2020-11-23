@@ -120,6 +120,7 @@ public class TestConfigurationService {
         assertEquals(0, Framework.getRuntime().getMessageHandler().getMessages(Level.WARNING).size());
 
         List<String> caughtEvents = logCaptureResult.getCaughtEventMessages();
+        // FIXME
         assertEquals(1, caughtEvents.size());
         String message = "Since version 7.4: Property 'nuxeo.test.dummyStringProperty' should now be contributed to "
                 + "extension point 'org.nuxeo.runtime.ConfigurationService', using target 'configuration'";
