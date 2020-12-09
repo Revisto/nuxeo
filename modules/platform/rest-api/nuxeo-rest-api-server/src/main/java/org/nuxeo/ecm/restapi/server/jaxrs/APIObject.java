@@ -112,9 +112,9 @@ public class APIObject extends DefaultObject {
     /**
      * @since 11.5
      */
-    @Path("/server")
-    public Object server() {
-        return newObject("server");
+    @Path("/capabilities")
+    public Object capabilities() {
+        return newObject("capabilities");
     }
 
     /**
