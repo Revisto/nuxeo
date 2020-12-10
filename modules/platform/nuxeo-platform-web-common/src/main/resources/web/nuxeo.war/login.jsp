@@ -420,10 +420,15 @@ if (selectedLanguage != null) { %>
     background-color: #bcbfbf;
     border-color: #4a4a4a;
   }
-
-  .is-ios .hide-for-ios,
-  .is-android .hide-for-android {
+  
+  .show-for-ios,
+  .show-for-android {
     display: none;
+  }
+  
+  .is-ios .show-for-ios,
+  .is-android .show-for-android {
+    display: inline;
   }
   <% } %>
 
@@ -561,7 +566,7 @@ if (selectedLanguage != null) { %>
         href="https://itunes.apple.com/app/nuxeo/id1103802613"
         target="_blank"
         rel="noopener"
-        class="hide-for-android"
+        class="show-for-ios"
         ><img
           class="app-icons"
           src="https://www.nuxeo.com/assets/imgs/icons/app-store.svg"
@@ -571,7 +576,7 @@ if (selectedLanguage != null) { %>
         href="https://play.google.com/store/apps/details?id=com.nuxeomobile"
         target="_blank"
         rel="noopener"
-        class="hide-for-ios"
+        class="show-for-android"
         ><img
           class="app-icons"
           src="https://www.nuxeo.com/assets/imgs/icons/google-play-badge.png"
