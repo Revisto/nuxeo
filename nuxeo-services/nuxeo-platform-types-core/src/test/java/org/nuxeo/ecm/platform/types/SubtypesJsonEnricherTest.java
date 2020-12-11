@@ -15,9 +15,16 @@
  *
  * Contributors:
  *     Gabriel Barata <gbarata@nuxeo.com>
+ *     Charles Boidot <cboidot@nuxeo.com>
  */
 
-package org.nuxeo.ecm.core.io.marshallers.json.enrichers;
+package org.nuxeo.ecm.platform.types;
+
+import static org.nuxeo.ecm.platform.types.localconfiguration.UITypesConfigurationConstants.UI_TYPES_CONFIGURATION_ALLOWED_TYPES_PROPERTY;
+import static org.nuxeo.ecm.platform.types.localconfiguration.UITypesConfigurationConstants.UI_TYPES_CONFIGURATION_FACET;
+
+import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -38,6 +45,7 @@ import org.nuxeo.runtime.test.runner.Features;
  * @since 8.4
  */
 @Features(CoreFeature.class)
+@Deploy("org.nuxeo.ecm.platform.types.core")
 @Deploy("org.nuxeo.ecm.core.io:OSGI-INF/doc-type-contrib.xml")
 public class SubtypesJsonEnricherTest extends AbstractJsonWriterTest.Local<DocumentModelJsonWriter, DocumentModel> {
 
@@ -59,10 +67,15 @@ public class SubtypesJsonEnricherTest extends AbstractJsonWriterTest.Local<Docum
 
     }
 
+    /**
+     * @since 11.5
+     */
+
     @Test
-    public void test() throws Exception {
+    public void testSubtypes() throws Exception {
         DocumentModel folderRoot = session.getDocument(new PathRef("/folder_root"));
-        JsonAssert json = jsonAssert(folderRoot, RenderingContext.CtxBuilder.enrichDoc("subtypes").get());
+        RenderingContext ctx = RenderingContext.CtxBuilder.enrichDoc("subtypes").get();
+        JsonAssert json = jsonAssert(folderRoot, ctx);
         json = json.has("contextParameters").isObject();
         json.properties(1);
         json = json.has("subtypes").isArray();
@@ -95,4 +108,20 @@ public class SubtypesJsonEnricherTest extends AbstractJsonWriterTest.Local<Docum
         json.childrenContains("type", "DummyDoc");
     }
 
+    @Test
+    public void testSubtypesWithLocalConfiguration() throws Exception {
+
+        DocumentModel folderRoot = session.getDocument(new PathRef("/folder_root"));
+        folderRoot.addFacet(UI_TYPES_CONFIGURATION_FACET);
+        folderRoot.setPropertyValue(UI_TYPES_CONFIGURATION_ALLOWED_TYPES_PROPERTY,
+                (Serializable) Arrays.asList("MyFolder"));
+
+        RenderingContext ctx = RenderingContext.CtxBuilder.enrichDoc("subtypes").get();
+        JsonAssert json = jsonAssert(folderRoot, ctx);
+        json = json.has("contextParameters").isObject();
+        json.properties(1);
+        json = json.has("subtypes").isArray();
+        json = json.length(1);
+        json.childrenContains("type", "MyFolder");
+    }
 }
